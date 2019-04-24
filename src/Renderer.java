@@ -35,7 +35,9 @@ public class Renderer
 	{
 		
 		bufferedImage = new BufferedImage();
-		polygons.add(new Polygon(buildShape(100, 100, 1, 100, 100, Color.black)));
+		polygons.add(new Polygon(buildShape(100, 100, 1, 100, 100, Color.green)));
+		polygons.add(new Polygon(buildShape(500, 450, 1, 321, 120, Color.red)));
+		polygons.add(new Polygon(buildShape(650, 30, 2, 45, 560, Color.blue)));
 		zBuffer(polygons);
 		
 		SwingUtilities.invokeLater(new Runnable() {
@@ -92,13 +94,11 @@ public class Renderer
 		{
 			for(int i = 1; i < poly.def[0].x; i++)
 			{
-				System.out.println("Poly Z: "  +poly.def[i].z+ "Buffer z: " + bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].z );
-				System.out.println("Poly index: " +i + "Buffer Index: " + (((poly.def[i].x-1) *1000) + poly.def[i].y));
+//				System.out.println("Poly Z: "  +poly.def[i].z+ "Buffer z: " + bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].z );
+//				System.out.println("Poly index: " +i + "Buffer Index: " + (((poly.def[i].x-1) *1000) + poly.def[i].y));
 				if(poly.def[i].z > bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].z)
 				{
 					bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].z = poly.def[i].z;
-//					bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].x = poly.def[i].x;
-//					bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].y = poly.def[i].y;
 					bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].color = poly.def[i].color;
 				}
 	
@@ -128,7 +128,7 @@ class BufferedImage extends JPanel
 	
 	public BufferedImage()
 	{
-		Renderer.Pixel temp[] = Renderer.buildShape(0, 0, -1, 1000, 1000, Color.blue);
+		Renderer.Pixel temp[] = Renderer.buildShape(0, 0, -1, 1000, 1000, Color.white);
 		this.def = temp;
 	}
 	
