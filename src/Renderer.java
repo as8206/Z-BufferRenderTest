@@ -211,8 +211,11 @@ class BufferedImage extends JPanel
    
         for(int i = 1; i < def[0].x; i++)
         {
-        	g.setColor(def[i].color);
-        	g.fillRect(def[i].x, def[i].y, 1, 1);
+        	if(def[i].color != Color.white)
+        	{
+        		g.setColor(def[i].color);
+        		g.fillRect(def[i].x, def[i].y, 1, 1);
+        	}
         }
     } 
     
