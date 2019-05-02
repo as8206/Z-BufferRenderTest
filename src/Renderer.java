@@ -10,8 +10,18 @@ import java.awt.Graphics;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ * A demo graphics interface to show off the z-buffer algorithm
+ * @author andrew
+ *
+ */
 public class Renderer 
 {
+	/**
+	 * Creates the Pixel class that will be used to build polygons
+	 * @author andrew
+	 *
+	 */
 	public static class Pixel
 	{
 		Color color;
@@ -26,16 +36,25 @@ public class Renderer
 		}
 	}
 	
+	//global variables and constants;
 	public static ArrayList<Polygon> polygons = new ArrayList<Polygon>();
 	private static BufferedImage bufferedImage;
-	private static String back = "back";
-	private static String forward = "forward";
 	private static JFrame f;
+	private static final String back = "back";
+	private static final String forward = "forward";
 	
+	/**
+	 * Runner
+	 * Builds the polygons, starts the swing render, and begins the main update loop
+	 * @param args
+	 * @throws InterruptedException
+	 */
 	public static void main(String[] args) throws InterruptedException
 	{
-		
+		//creates the initial empty buffered image
 		bufferedImage = new BufferedImage();
+		
+		//builds and adds the polygons to the array list
 		polygons.add(buildShape(100, 100, 0, 250, 250, Color.green, forward));
 		polygons.add(buildShape(500, 450, 15, 321, 120, Color.red, back));
 		polygons.add(buildShape(650, 30, 0, 45, 560, Color.blue, forward));
@@ -45,8 +64,11 @@ public class Renderer
 		polygons.add(buildShape(25, 760, 4, 333, 200, Color.pink, back));
 		polygons.add(buildShape(275, 830, 18, 600, 70, Color.cyan, forward));
 		polygons.add(buildShape(690, 690, 2, 250, 250, Color.orange, forward));
+		
+		//calls the zBuffer algorithm to build the starting frame
 		zBuffer(polygons);
 		
+		//starts the swing render
 		SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -58,11 +80,17 @@ public class Renderer
             }
         });
 		
+		//main running loop
 		while(true)
 		{
+			//allows for (roughly) a frame rate of 5 FPS
 			Thread.sleep(200);
+			
+			//moves the polygons and rebuilds the frame using the zBuffer
 			Update();
 			zBuffer(polygons);	
+			
+			//repaints the image
 			if(f != null)
 			{
 				f.revalidate();
@@ -71,6 +99,10 @@ public class Renderer
 		}
 	}
 	
+	/**
+	 * allow a single call tho this update method to call the 
+	 * update method for every polygon
+	 */
 	private static void Update()
 	{
 		for(Polygon poly : polygons)
@@ -79,6 +111,10 @@ public class Renderer
 		}
 	}
 	
+	/**
+	 * Swing method to start GUI
+	 * @throws InterruptedException
+	 */
 	private static void createAndShow() throws InterruptedException 
 	{
         System.out.println("Created on EDT? "+ SwingUtilities.isEventDispatchThread());
@@ -89,6 +125,20 @@ public class Renderer
         f.setVisible(true);
     }
 	
+	/**
+	 * Given size, color, and movement direction parameters, constructs and 
+	 * returns a polygon with the supplied characteristics. 
+	 * The first pixel in every polygon is a flag with x, y, and z set to 
+	 * the amount of pixels in the array
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param length
+	 * @param height
+	 * @param color
+	 * @param direction
+	 * @return
+	 */
 	public static Polygon buildShape(int x, int y, int z, int length, int height, Color color, String direction)
     {
     	Pixel rect[] = new Pixel[(length*height) + 1];
@@ -109,6 +159,19 @@ public class Renderer
     	return poly;
     }
 	
+	/**
+	 * modified from buildShape method
+	 * returns only the pixel array that would define the shape without
+	 * bundling it as a polygon. Used only to create and reset
+	 * the buffered image
+	 * @param x
+	 * @param y
+	 * @param z
+	 * @param length
+	 * @param height
+	 * @param color
+	 * @return
+	 */
 	public static Pixel[] buildRender(int x, int y, int z, int length, int height, Color color)
     {
     	Pixel rect[] = new Pixel[(length*height) + 1];
@@ -127,15 +190,27 @@ public class Renderer
     	return rect;
     }
 	
+	/**
+	 * When given an array list of polygons, with update the buffered image
+	 * with the correct frame built from those polygons
+	 * @param polygons
+	 */
 	public static void zBuffer(ArrayList<Polygon> polygons)
 	{
+		//resets the buffered image to default state
 		bufferedImage.reset();
+		
+		//iterates through every polygon in the list
 		for(Polygon poly : polygons)
 		{
+			//iterates through every polygon, using the first pixel to define array length
 			for(int i = 1; i < poly.def[0].x; i++)
 			{
+				//checks if the pixel in the polygon is at a greater z than the pixel in the same
+				//x,y position of the buffered image
 				if(poly.def[i].z > bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].z)
 				{
+					//sets the buffered image pixel's z and color to the current polygon's values
 					bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].z = poly.def[i].z;
 					bufferedImage.def[((poly.def[i].x-1) *1000) + poly.def[i].y].color = poly.def[i].color;
 				}
@@ -145,6 +220,12 @@ public class Renderer
 	}
 }
 
+/**
+ * defines the polygon object that is used to hold a shapes pixel definition 
+ * and its direction of travel
+ * @author andrew
+ *
+ */
 class Polygon
 {
 	Renderer.Pixel def[];
@@ -155,6 +236,9 @@ class Polygon
 		this.def = def;
 	}
 	
+	/**
+	 * Sets the direction of travel and calls the move method
+	 */
 	public void update()
 	{
 		if(def[1].z >= 20)
@@ -164,11 +248,18 @@ class Polygon
 		move();
 	}
 	
+	/**
+	 * allows the direction to be set outside this class
+	 * @param dir
+	 */
 	public void setDirection(String dir)
 	{
 		direction = dir;
 	}
 	
+	/**
+	 * Updates the x, y, and z based on the direction of movement
+	 */
 	private void move()
 	{
 		if (direction.equalsIgnoreCase("forward"))
@@ -192,20 +283,35 @@ class Polygon
 	}
 }
 
+/**
+ * Defines the class that will be used as an object to hold the final buffered image
+ * created by the zBuffer algorithm
+ * @author andrew
+ *
+ */
 class BufferedImage extends JPanel
 {
 	public Renderer.Pixel def[];
 	
+	/**
+	 * creates an empty definition for the buffered image
+	 */
 	public BufferedImage()
 	{
 		Renderer.Pixel temp[] = Renderer.buildRender(0, 0, -1, 1000, 1000, Color.white);
 		this.def = temp;
 	}
 	
+	/**
+	 * Sets the size of the image to the same as the JFrame (1000 by 1000 pixels)
+	 */
 	public Dimension getPreferredSize() {
         return new Dimension(1000,1000);
     }
 
+	/**
+	 * Defines how the component will be drawn
+	 */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
    
@@ -219,6 +325,9 @@ class BufferedImage extends JPanel
         }
     } 
     
+    /**
+     * Resets the buffered image to a default empty state
+     */
     public void reset()
     {
     	def = Renderer.buildRender(0, 0, -1, 1000, 1000, Color.white);
