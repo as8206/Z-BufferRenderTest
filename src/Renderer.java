@@ -200,6 +200,9 @@ public class Renderer
 		//resets the buffered image to default state
 		bufferedImage.reset();
 		
+		//gets the start time to check elapsed time
+		long startTime = System.nanoTime();
+		
 		//iterates through every polygon in the list
 		for(Polygon poly : polygons)
 		{
@@ -217,6 +220,12 @@ public class Renderer
 	
 			}
 		}
+		
+		//gets end time to check elapsed time
+		long endTime = System.nanoTime();
+		
+		//Prints out the time for the algorithm to operate
+		System.out.println("Elapsed Time (nano-Seconds): " + (endTime - startTime));
 	}
 }
 
