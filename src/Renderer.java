@@ -100,7 +100,7 @@ public class Renderer
 	}
 	
 	/**
-	 * allow a single call tho this update method to call the 
+	 * allow a single call to this update method to call the 
 	 * update method for every polygon
 	 */
 	private static void Update()
@@ -225,7 +225,7 @@ public class Renderer
 		long endTime = System.nanoTime();
 		
 		//Prints out the time for the algorithm to operate
-		System.out.println("Elapsed Time (nano-Seconds): " + (endTime - startTime));
+		System.out.println("Elapsed Time (milli-Seconds): " + ((endTime - startTime)/1000000.0));
 	}
 }
 
