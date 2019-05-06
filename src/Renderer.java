@@ -45,8 +45,8 @@ public class Renderer
 	
 	//constants for random generation and frame rate
 	public static final Boolean presetPolygons = false;
-	public static final int amountOfPolygons = 500;
-	public static final int approxFPS = 15;
+	public static final int amountOfPolygons = 50;
+	public static final int approxFPS = 30; //not really accurate but some useful for control
 	
 	/**
 	 * Runner
@@ -100,7 +100,7 @@ public class Renderer
 			curTime = System.currentTimeMillis();
 			
 			//allows for (roughly) a frame rate of [approxFPS]
-			while(curTime - lastStart < (1000/approxFPS))
+			while(curTime - endTime < (1000/approxFPS))
 			{
 				curTime = System.currentTimeMillis();
 			}
@@ -257,6 +257,7 @@ public class Renderer
 	public static void zBuffer(ArrayList<Polygon> polygons)
 	{
 		//resets the buffered image to default state
+		//outside timing as this is a result of implementation, not the associated with the algorithm itself
 		bufferedImage.reset();
 		
 		//gets the start time to check elapsed time
