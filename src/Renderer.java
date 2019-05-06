@@ -46,7 +46,7 @@ public class Renderer
 	//constants for random generation and frame rate
 	public static final Boolean presetPolygons = false;
 	public static final int amountOfPolygons = 50;
-	public static final int approxFPS = 30;
+	public static final int approxFPS = 30; //not really accurate but some useful for control
 	
 	/**
 	 * Runner
@@ -92,6 +92,7 @@ public class Renderer
             }
         });
 		long endTime, curTime;
+		long lastStart = System.currentTimeMillis();
 		endTime = System.currentTimeMillis() + (1000/approxFPS);
 		//main running loop
 		while(true)
@@ -103,6 +104,8 @@ public class Renderer
 			{
 				curTime = System.currentTimeMillis();
 			}
+			System.out.println("FPS: " + 1000/(curTime - lastStart));
+			lastStart = System.currentTimeMillis();
 			
 			//moves the polygons and rebuilds the frame using the zBuffer
 			Update();
@@ -115,7 +118,7 @@ public class Renderer
 				f.repaint();
 			}
 			endTime = System.currentTimeMillis();
-			System.out.println("Render Time: " + (endTime - curTime));
+			System.out.println("Full Render Time (milli-seconds): " + (endTime - curTime));
 		}
 	}
 	
@@ -254,6 +257,7 @@ public class Renderer
 	public static void zBuffer(ArrayList<Polygon> polygons)
 	{
 		//resets the buffered image to default state
+		//outside timing as this is a result of implementation, not the associated with the algorithm itself
 		bufferedImage.reset();
 		
 		//gets the start time to check elapsed time
@@ -281,7 +285,7 @@ public class Renderer
 		long endTime = System.nanoTime();
 		
 		//Prints out the time for the algorithm to operate
-		System.out.println("Elapsed Time (milli-Seconds): " + ((endTime - startTime)/1000000.0));
+		System.out.println("Elapsed Time z-Buffer (milli-Seconds): " + ((endTime - startTime)/1000000.0));
 	}
 }
 
