@@ -43,9 +43,10 @@ public class Renderer
 	private static final String back = "back";
 	private static final String forward = "forward";
 	
-	//constants for random generation
+	//constants for random generation and frame rate
 	public static final Boolean presetPolygons = false;
-	public static final int amountOfPolygons = 10;
+	public static final int amountOfPolygons = 1000;
+	public static final int approxFPS = 30;
 	
 	/**
 	 * Runner
@@ -90,12 +91,18 @@ public class Renderer
 				} 
             }
         });
-		
+		long endTime, curTime;
+		endTime = System.currentTimeMillis() + (1000/approxFPS);
 		//main running loop
 		while(true)
 		{
-			//allows for (roughly) a frame rate of 5 FPS
-			Thread.sleep(200);
+			curTime = System.currentTimeMillis();
+			
+			//allows for (roughly) a frame rate of [approxFPS]
+			while(curTime - endTime < (1000/approxFPS))
+			{
+				curTime = System.currentTimeMillis();
+			}
 			
 			//moves the polygons and rebuilds the frame using the zBuffer
 			Update();
@@ -107,6 +114,8 @@ public class Renderer
 				f.revalidate();
 				f.repaint();
 			}
+			endTime = System.currentTimeMillis();
+			System.out.println("Render Time: " + (endTime - curTime));
 		}
 	}
 	
@@ -123,11 +132,15 @@ public class Renderer
 		for(int i = 0; i < polyCount; i++)
 		{
 			//Generates random values for the polygon
-			x = (int) (Math.random() * 775) + 25;
-			y = (int) (Math.random() * 775) + 25;
+			x = (int) (Math.random() * 900) + 25;
+			y = (int) (Math.random() * 900) + 25;
 			z = (int) (Math.random() * 21) + 1;
-			length = (int) (Math.random() * 180) + 20;
-			height = (int) (Math.random() * 180) + 20;
+			length = (int) (Math.random() * 280) + 21;
+			if(x+length >= 975)
+				length = 975 - x;
+			height = (int) (Math.random() * 280) + 21;
+			if(y+height >= 975)
+				height = 975 - y;
 			color = new Color((int)(Math.random() * 256), (int)(Math.random() * 256), (int)(Math.random() * 256));
 			directionRandInt = (int) Math.random() * 2;
 			
