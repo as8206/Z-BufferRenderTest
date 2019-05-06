@@ -16,7 +16,7 @@ import java.util.Arrays;
  *
  */
 public class Renderer 
-{
+{	
 	/**
 	 * Creates the Pixel class that will be used to build polygons
 	 * @author andrew
@@ -43,6 +43,10 @@ public class Renderer
 	private static final String back = "back";
 	private static final String forward = "forward";
 	
+	//constants for random generation
+	public static final Boolean presetPolygons = false;
+	public static final int amountOfPolygons = 10;
+	
 	/**
 	 * Runner
 	 * Builds the polygons, starts the swing render, and begins the main update loop
@@ -54,16 +58,23 @@ public class Renderer
 		//creates the initial empty buffered image
 		bufferedImage = new BufferedImage();
 		
-		//builds and adds the polygons to the array list
-		polygons.add(buildShape(100, 100, 0, 250, 250, Color.green, forward));
-		polygons.add(buildShape(500, 450, 15, 321, 120, Color.red, back));
-		polygons.add(buildShape(650, 30, 0, 45, 560, Color.blue, forward));
-		polygons.add(buildShape(162, 162, 15, 125, 125, Color.lightGray, back));
-		polygons.add(buildShape(300, 300, 12, 300, 250, Color.magenta, back));
-		polygons.add(buildShape(550, 200, 20, 78, 725, Color.darkGray, back));
-		polygons.add(buildShape(25, 760, 4, 333, 200, Color.pink, back));
-		polygons.add(buildShape(275, 830, 18, 600, 70, Color.cyan, forward));
-		polygons.add(buildShape(690, 690, 2, 250, 250, Color.orange, forward));
+		if (presetPolygons)
+		{
+			//builds and adds the polygons to the array list
+			polygons.add(buildShape(100, 100, 0, 250, 250, Color.green, forward));
+			polygons.add(buildShape(500, 450, 15, 321, 120, Color.red, back));
+			polygons.add(buildShape(650, 30, 0, 45, 560, Color.blue, forward));
+			polygons.add(buildShape(162, 162, 15, 125, 125, Color.lightGray, back));
+			polygons.add(buildShape(300, 300, 12, 300, 250, Color.magenta, back));
+			polygons.add(buildShape(550, 200, 20, 78, 725, Color.darkGray, back));
+			polygons.add(buildShape(25, 760, 4, 333, 200, Color.pink, back));
+			polygons.add(buildShape(275, 830, 18, 600, 70, Color.cyan, forward));
+			polygons.add(buildShape(690, 690, 2, 250, 250, Color.orange, forward));
+		}
+		else
+		{
+			generateRandomPolygons(amountOfPolygons);
+		}
 		
 		//calls the zBuffer algorithm to build the starting frame
 		zBuffer(polygons);
@@ -99,6 +110,38 @@ public class Renderer
 		}
 	}
 	
+	/**
+	 * populates the polygons array with random polygon definitions
+	 * @param polyCount
+	 */
+	private static void generateRandomPolygons(int polyCount) 
+	{
+		int x, y, z, length, height, directionRandInt;
+		String direction;
+		Color color;
+		
+		for(int i = 0; i < polyCount; i++)
+		{
+			//Generates random values for the polygon
+			x = (int) (Math.random() * 775) + 25;
+			y = (int) (Math.random() * 775) + 25;
+			z = (int) (Math.random() * 21) + 1;
+			length = (int) (Math.random() * 180) + 20;
+			height = (int) (Math.random() * 180) + 20;
+			color = new Color((int)(Math.random() * 256), (int)(Math.random() * 256), (int)(Math.random() * 256));
+			directionRandInt = (int) Math.random() * 2;
+			
+			if(directionRandInt == 0)
+				direction = back;
+			else
+				direction = forward;
+			
+			//builds and adds the polygon to the array
+			polygons.add(buildShape(x, y, z, length, height, color, direction));
+		}
+		
+	}
+
 	/**
 	 * allow a single call to this update method to call the 
 	 * update method for every polygon
