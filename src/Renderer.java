@@ -45,7 +45,7 @@ public class Renderer
 	
 	//constants for random generation and frame rate
 	public static final Boolean presetPolygons = false;
-	public static final int amountOfPolygons = 1000;
+	public static final int amountOfPolygons = 50;
 	public static final int approxFPS = 30;
 	
 	/**
@@ -281,7 +281,7 @@ public class Renderer
 		long endTime = System.nanoTime();
 		
 		//Prints out the time for the algorithm to operate
-		System.out.println("Elapsed Time (milli-Seconds): " + ((endTime - startTime)/1000000.0));
+		System.out.println(((endTime - startTime)/1000000.0));
 	}
 }
 
