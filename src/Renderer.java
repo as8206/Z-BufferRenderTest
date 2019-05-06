@@ -281,7 +281,7 @@ public class Renderer
 		long endTime = System.nanoTime();
 		
 		//Prints out the time for the algorithm to operate
-		System.out.println(((endTime - startTime)/1000000.0));
+		System.out.println("Elapsed Time (milli-Seconds): " + ((endTime - startTime)/1000000.0));
 	}
 }
 
